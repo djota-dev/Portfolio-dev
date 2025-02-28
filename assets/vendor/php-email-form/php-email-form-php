@@ -1,0 +1,34 @@
+<?php
+// Verifica si el formulario se ha enviado
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Configura la dirección de destino (cambia esto por tu email)
+    $to = "djotadeveloper@gmail.com";
+    $subject = "Nuevo mensaje de contacto";
+
+    // Recibe los datos del formulario
+    $name = strip_tags(trim($_POST["name"]));
+    $email = filter_var(trim($_POST["email"]), FILTER_SANITIZE_EMAIL);
+    $message = trim($_POST["message"]);
+
+    // Verifica si los campos están completos
+    if (!empty($name) && !empty($email) && !empty($message) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        
+        // Cuerpo del correo
+        $body = "Nombre: $name\n";
+        $body .= "Correo: $email\n\n";
+        $body .= "Mensaje:\n$message\n";
+
+        // Cabecera del correo (para indicar de dónde proviene)
+        $headers = "From: $email";
+
+        // Intenta enviar el correo
+        if (mail($to, $subject, $body, $headers)) {
+            echo "Gracias por contactarnos, hemos recibido tu mensaje.";
+        } else {
+            echo "Hubo un problema al enviar tu mensaje. Por favor intenta de nuevo más tarde.";
+        }
+    } else {
+        echo "Por favor, completa todos los campos del formulario correctamente.";
+    }
+}
+?>
